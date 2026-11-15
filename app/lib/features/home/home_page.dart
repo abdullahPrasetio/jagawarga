@@ -33,10 +33,15 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool _loading = true;
   StreamSubscription<AppEvent>? _events;
 
+  Timer? _poll;
+
   @override
   void initState() {
     super.initState();
     _load();
+    // Jaring pengaman bila SSE terputus (Cloudflare/proxy/OEM): status alert
+    // tetap segar tanpa menunggu event.
+    _poll = Timer.periodic(const Duration(seconds: 15), (_) => _load(silent: true));
     _events = ref.read(eventsProvider).stream.listen((event) {
       if (event.name.startsWith('panic') || event.name.startsWith('announcement')) _load(silent: true);
     });
@@ -44,6 +49,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   void dispose() {
+    _poll?.cancel();
     _events?.cancel();
     super.dispose();
   }

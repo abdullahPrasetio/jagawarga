@@ -7,7 +7,8 @@
 | Bun | 1.4.x | server + test |
 | Node.js | 22.x | hanya untuk web (Vite) |
 | Docker | OrbStack / Docker Desktop | Postgres dev & build edge |
-| Flutter | 3.50 stable | SDK Android ≥35, JDK 17 (AGP 8) |
+| Flutter | 3.50 stable | SDK Android ≥35, JDK 17 untuk debug |
+| JDK 21 | `/opt/homebrew/opt/openjdk@21` | **wajib untuk `flutter build apk --release`** (lint vital AGP 9 memakai API Java 21; JDK 17 gagal `NoSuchMethodError`) |
 | Android SDK | platforms 35/36, AVD `Medium_Phone_API_36.0` | `adb` & `emulator` di `$HOME/Library/Android/sdk` |
 | jq, curl | apa saja | dipakai skrip verifikasi |
 
@@ -15,7 +16,8 @@ JDK 17 bisa dari `brew install openjdk@17` (keg-only). Arahkan Flutter:
 
 ```bash
 flutter config --android-sdk "$HOME/Library/Android/sdk"
-flutter config --jdk-dir /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
+# debug boleh JDK 17; release butuh JDK 21:
+flutter config --jdk-dir /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
 ```
 
 ## Menyiapkan dari nol

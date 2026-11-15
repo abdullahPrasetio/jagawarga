@@ -6,11 +6,14 @@ VERSION ?= 1.0.0
 REVISION ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo local)
 PLATFORM ?= linux/amd64
 PUSH_PLATFORMS ?= linux/amd64,linux/arm64
+
+# --- APK ---
+APK_API_URL ?= https://jagawarga.example.com
 IMAGE_API = $(DOCKER_NAMESPACE)/api
 IMAGE_WEB = $(DOCKER_NAMESPACE)/web
 BUILD_ARGS = --build-arg VERSION=$(VERSION) --build-arg REVISION=$(REVISION)
 
-.PHONY: up down db api migrate seed test dev app demo-app web web-build reset verify clean \
+.PHONY: up down db api migrate seed test dev app demo-app apk-release web web-build reset verify clean \
 	images image-api image-web publish publish-api publish-web prod-up prod-down prod-migrate
 
 up:            ## nyalakan Postgres (+ API via docker)
@@ -40,6 +43,12 @@ app:           ## jalankan Flutter di emulator (hot reload)
 
 demo-app:      ## emulator + APK debug + buka aplikasi (tanpa hot reload)
 	./scripts/demo-app.sh
+
+apk-release:   ## APK release untuk API https (APK_API_URL=...)
+	cd app && flutter build apk --release \
+		--dart-define=API_BASE_URL=$(APK_API_URL) \
+		--dart-define=WEB_ADMIN_URL=$(APK_API_URL)
+	@echo "APK: app/build/app/outputs/flutter-apk/app-release.apk" 
 
 web:           ## dev server React admin
 	cd web && npm run dev

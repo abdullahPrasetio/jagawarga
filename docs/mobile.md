@@ -102,6 +102,7 @@ Event yang dipakai: `panic.created`, `panic.updated`, `announcement.published`.
 Izin Android: `INTERNET`, `POST_NOTIFICATIONS`, `ACCESS_FINE/COARSE_LOCATION`. Cleartext HTTP hanya diizinkan untuk `10.0.2.2`, `localhost`, `127.0.0.1` (`network_security_config`); build **debug** mengizinkan IP LAN untuk uji di HP fisik, build release tidak.
 
 ```bash
+make apk-release APK_API_URL=https://jagawarga.domain.id   # APK rilis untuk API HTTPS
 make demo-app                         # emulator + APK + buka app
 cd app && flutter run                 # hot reload
 cd app && flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8787   # HP fisik

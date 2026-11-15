@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'api_client.dart';
@@ -61,6 +62,7 @@ class EventsClient {
     try {
       final body = await _ref.read(apiProvider).stream('events/stream', lastEventId: _lastEventId);
       _attempt = 0;
+      debugPrint('[sse] terhubung');
 
       final buffer = StringBuffer();
 
@@ -84,11 +86,18 @@ class EventsClient {
             ..clear()
             ..write(text);
         },
-        onDone: _scheduleReconnect,
-        onError: (_) => _scheduleReconnect(),
+        onDone: () {
+          debugPrint('[sse] koneksi ditutup server');
+          _scheduleReconnect();
+        },
+        onError: (Object error) {
+          debugPrint('[sse] error stream: $error');
+          _scheduleReconnect();
+        },
         cancelOnError: true,
       );
-    } catch (_) {
+    } catch (error) {
+      debugPrint('[sse] gagal konek: $error');
       _scheduleReconnect();
     }
   }
@@ -127,6 +136,7 @@ class EventsClient {
 
     const delays = [1, 2, 4, 8, 30];
     final seconds = delays[_attempt.clamp(0, delays.length - 1)];
+    debugPrint('[sse] reconnect dalam ${seconds}s');
     _attempt += 1;
 
     _retryTimer?.cancel();
