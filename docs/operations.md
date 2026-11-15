@@ -59,13 +59,17 @@ Catatan: image default dibangun untuk `linux/amd64` (target VPS). Menjalankannya
 ## Produksi (satu VPS, image dari registry)
 
 ```bash
-cp .env.example .env
-# isi: JWT_SECRET (32+ byte), POSTGRES_PASSWORD, DOMAIN,
-#      PUBLIC_BASE_URL=https://$DOMAIN, CORS_ORIGINS=https://$DOMAIN,
-#      DOCKER_NAMESPACE, VERSION, FCM_SERVICE_ACCOUNT_JSON (opsional)
+cp deploy/env.production.example .env     # template khusus VPS + komentar
+chmod 600 .env
+# isi minimal: JWT_SECRET, POSTGRES_PASSWORD, DOMAIN, PUBLIC_BASE_URL,
+#              CORS_ORIGINS, DOCKER_NAMESPACE, VERSION
+openssl rand -hex 32          # JWT_SECRET
+openssl rand -base64 24       # POSTGRES_PASSWORD
 
 make prod-up      # pull image + up + migrasi
 ```
+
+`APP_ENV=production`, `PORT`, `MEDIA_DIR`, dan `DATABASE_URL` **tidak** perlu diisi — `docker-compose.prod.yml` menurunkan/memaksanya. `FCM_SERVICE_ACCOUNT_JSON` opsional: kosong = push nonaktif, inbox tetap jalan.
 
 Perintah setara tanpa Make:
 
