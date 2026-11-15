@@ -1,0 +1,26 @@
+{
+  "name": "jagawarga-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bun src/db/migrate.ts",
+    "seed": "bun scripts/seed.ts",
+    "test": "bun test",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.4",
+    "firebase-admin": "^14.5.1",
+    "hono": "^4.13.18",
+    "postgres": "^4.1.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "drizzle-kit": "^0.31.11"
+  }
+}

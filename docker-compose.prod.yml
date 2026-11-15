@@ -1,0 +1,67 @@
+# Deployment produksi: menarik image dari registry (Docker Hub / GHCR).
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+#   docker compose -f docker-compose.prod.yml run --rm api bun src/db/migrate.ts
+name: jagawarga-prod
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-jagawarga}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD wajib diisi}
+      POSTGRES_DB: ${POSTGRES_DB:-jagawarga}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-jagawarga} -d ${POSTGRES_DB:-jagawarga}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging: *logging
+
+  api:
+    image: ${DOCKER_NAMESPACE:-jagawarga}/api:${VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-jagawarga}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-jagawarga}
+      APP_ENV: production
+      PORT: "8787"
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET wajib diisi (32+ byte)}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?PUBLIC_BASE_URL wajib, mis. https://jagawarga.domain.id}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS wajib, mis. https://jagawarga.domain.id}
+      FCM_SERVICE_ACCOUNT_JSON: ${FCM_SERVICE_ACCOUNT_JSON:-}
+      MEDIA_DIR: /data/media
+    volumes:
+      - ./data/media:/data/media
+    logging: *logging
+
+  edge:
+    image: ${DOCKER_NAMESPACE:-jagawarga}/web:${VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN wajib, mis. jagawarga.domain.id}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    logging: *logging
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

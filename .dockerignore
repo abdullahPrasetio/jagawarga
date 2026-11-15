@@ -1,0 +1,16 @@
+**/node_modules
+**/.dart_tool
+**/build
+**/dist
+**/.gradle
+data
+.env
+.git
+design
+scripts
+app/android
+app/ios
+app/test
+app/integration_test
+server/test
+server/drizzle

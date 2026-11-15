@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jagawarga
+      POSTGRES_PASSWORD: jagawarga
+      POSTGRES_DB: jagawarga
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deploy/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jagawarga -d jagawarga"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./server
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8787:8787"
+    environment:
+      DATABASE_URL: postgres://jagawarga:jagawarga@db:5432/jagawarga
+      MEDIA_DIR: /data/media
+      PORT: "8787"
+      APP_ENV: ${APP_ENV:-development}
+      JWT_SECRET: ${JWT_SECRET}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8787}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      FCM_SERVICE_ACCOUNT_JSON: ${FCM_SERVICE_ACCOUNT_JSON:-}
+    volumes:
+      - ./data/media:/data/media
+
+  edge:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.edge
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

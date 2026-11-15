@@ -1,0 +1,34 @@
+# Edge: build web admin lalu sajikan lewat Caddy bersama proxy /api.
+# Image ini tidak bergantung pada domain/API URL: web memanggil `/api/v1`
+# secara same-origin, dan DOMAIN diberikan saat runtime.
+FROM node:22-alpine AS web
+
+WORKDIR /web
+
+COPY web/package.json web/package-lock.json* ./
+RUN npm ci
+
+COPY web/ ./
+# Tipe API diimpor dari kontrak server (import type saja, tanpa runtime).
+# `zod` diresolusi lewat symlink node_modules agar sama seperti di mesin lokal.
+RUN mkdir -p /server/src && ln -s /web/node_modules /server/node_modules
+COPY server/src/contracts.ts /server/src/contracts.ts
+RUN npm run build
+
+FROM caddy:2-alpine
+
+ARG VERSION=dev
+ARG REVISION=local
+ARG SOURCE_URL=https://github.com/jagawarga/jagawarga
+
+LABEL org.opencontainers.image.title="Jaga Warga Web" \
+      org.opencontainers.image.description="Web admin Jaga Warga + Caddy reverse proxy /api" \
+      org.opencontainers.image.source="${SOURCE_URL}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${REVISION}" \
+      org.opencontainers.image.licenses="UNLICENSED"
+
+COPY deploy/Caddyfile /etc/caddy/Caddyfile
+COPY --from=web /web/dist /srv/web
+
+EXPOSE 80 443

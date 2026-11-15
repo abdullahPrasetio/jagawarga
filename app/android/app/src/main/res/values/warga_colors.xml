@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="warga_brand_900">#0B3B24</color>
+    <color name="warga_brand_600">#1A6B3C</color>
+    <color name="warga_brand_100">#DCFCE7</color>
+    <color name="warga_surface">#FFFFFF</color>
+    <color name="warga_ink">#10231A</color>
+    <color name="warga_muted">#5B6B61</color>
+    <color name="warga_line">#E3E6E1</color>
+    <color name="warga_danger">#DC2626</color>
+    <color name="warga_danger_100">#FEE2E2</color>
+    <color name="warga_danger_700">#991B1B</color>
+</resources>
