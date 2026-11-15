@@ -116,7 +116,7 @@ cd app && flutter build apk --debug
 | `flutter analyze` | tanpa error/warning |
 | `flutter test integration_test -d <device>` | login → alert realtime (SSE) → layar panic → batalkan/selesaikan; butuh API + data demo |
 
-Catatan: di mesin pengembangan saat ini emulator API 36 (OrbStack, Apple M1) tidak stabil untuk uji perangkat penuh (ANR/ADB putus). Uji tahan-tombol karena itu dijalankan sebagai widget test deterministik, bukan di emulator. Lihat [roadmap.md](roadmap.md).
+Catatan: emulator API 36 butuh ruang disk host yang cukup. Saat disk hampir penuh, emulator ANR dan `adb` putus — bersihkan `app/build` dan cache Docker sebelum menyalahkan aplikasi. Lihat [roadmap.md](roadmap.md).
 
 ## Konvensi UI
 

@@ -14,7 +14,7 @@ Belum terverifikasi penuh: **uji perangkat on-device** (lihat bawah) dan **push 
 
 ## Batasan saat ini
 
-1. **Emulator lokal tidak stabil.** API 36 di OrbStack/Apple M1 berkali-kali ANR dan `adb` putus saat uji perangkat. `integration_test/panic_flow_test.dart` sudah ditulis (login → alert realtime → aksi panic) tetapi belum lulus di mesin ini. Widget test menutup risiko logika tahan-tombol.
+1. **Emulator sempat gagal karena disk host penuh.** Dengan sisa 3,6 GB dari 461 GB, emulator ANR dan `adb` melaporkan "failed to attach"; setelah `flutter clean` + `docker builder prune` (sisa ±23 GB) aplikasi berjalan normal. `integration_test/panic_flow_test.dart` sudah ditulis tetapi belum dijalankan ulang setelah pembersihan; widget test menutup risiko logika tahan-tombol.
 2. **Push belum aktif** karena belum ada `google-services.json` / service account. Tanpa itu: panic tetap realtime via SSE saat app terbuka dan selalu masuk inbox notifikasi. Saluran push (judul per jenis, `tag`, topic petugas, log hasil kirim) sudah siap di kode.
 3. **iOS belum dibangun** (hanya Command Line Tools, tanpa Xcode). Kode dijaga iOS-safe.
 4. **Sirine/relay masjid** belum ada; baru tersedia satu titik sisip.
