@@ -12,6 +12,14 @@ EMULATOR="$ANDROID_HOME/emulator/emulator"
 AVD="${AVD:-Medium_Phone_API_36.0}"
 APK="app/build/app/outputs/flutter-apk/app-debug.apk"
 
+# Emulator butuh beberapa GB; disk penuh membuat adb/ANR gagal secara misterius.
+FREE_KB=$(df -k "$ROOT" | awk 'NR==2 {print $4}')
+if [ "${FREE_KB:-0}" -lt 8388608 ]; then
+  echo "Disk tersisa $((FREE_KB / 1024 / 1024)) GB. Emulator butuh minimal ~8 GB bebas." >&2
+  echo "Jalankan: (cd app && flutter clean) && docker builder prune -f" >&2
+  exit 1
+fi
+
 if ! curl -sf http://localhost:8787/api/v1/health >/dev/null 2>&1; then
   echo "API belum berjalan. Jalankan 'make dev' di terminal lain, lalu ulangi." >&2
   exit 1

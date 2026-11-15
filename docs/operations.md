@@ -153,6 +153,7 @@ Batas keras: berkas ≤5 MB, 10 unggahan/pengguna/hari, server menolak menulis b
 | Data dev kacau | – | `make reset` (drop schema + migrate + seed) |
 | Semua data hilang setelah `verify-mvp.sh` | skrip melakukan drop schema | memang perilaku skrip; jangan jalankan di produksi |
 | `verify-mvp.sh` menolak jalan | port 8787 sudah dipakai | hentikan `make dev` dulu (skrip menjalankan API sendiri) |
+| Emulator ANR / `adb` putus / `failed to attach` | disk host penuh (emulator butuh ≥8 GB) | `df -h`; `(cd app && flutter clean)`, `docker builder prune -f`, hapus image lama |
 | Semua pengguna ter-logout setelah reset | `make reset`/`verify-mvp.sh` menghapus tabel `sessions` | normal untuk dev; minta login ulang. Bukan bug sesi 30 hari |
 
 ## Skala
