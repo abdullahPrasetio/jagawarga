@@ -28,3 +28,4 @@ media-*.tgz
 app/android/local.properties
 app/ios/Pods/
 app/ios/.symlinks/
+**/.kotlin/

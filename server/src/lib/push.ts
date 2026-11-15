@@ -15,6 +15,8 @@ export type PushMessage = {
 export type PushResult = { ok: boolean; error?: string };
 
 export interface PushAdapter {
+  /** `fcm` = Firebase aktif; `log` = push dinonaktifkan (hanya log). */
+  readonly kind: 'fcm' | 'log';
   sendToTopic(topic: string, message: PushMessage): Promise<PushResult>;
 }
 
@@ -61,6 +63,8 @@ export function alertNotification(
 }
 
 class LogPush implements PushAdapter {
+  readonly kind = 'log' as const;
+
   async sendToTopic(topic: string, message: PushMessage): Promise<PushResult> {
     console.log(
       `[push:log] topic=${topic} tag=${message.tag ?? '-'} title=${JSON.stringify(message.title)}`,
@@ -70,6 +74,8 @@ class LogPush implements PushAdapter {
 }
 
 class FcmPush implements PushAdapter {
+  readonly kind = 'fcm' as const;
+
   async sendToTopic(topic: string, message: PushMessage): Promise<PushResult> {
     const emergency = message.data.type === 'panic';
 

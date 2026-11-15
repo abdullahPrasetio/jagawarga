@@ -4,6 +4,12 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Push FCM aktif hanya kalau konfigurasi Firebase tersedia. Tanpa file ini
+// aplikasi tetap berjalan (push dinonaktifkan saat runtime).
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "id.jagawarga.app"
     compileSdk = 37

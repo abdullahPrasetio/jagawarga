@@ -69,6 +69,8 @@ openssl rand -base64 24       # POSTGRES_PASSWORD
 make prod-up      # pull image + up + migrasi
 ```
 
+Panduan push lengkap: [push-notifications.md](push-notifications.md).
+
 `APP_ENV=production`, `PORT`, `MEDIA_DIR`, dan `DATABASE_URL` **tidak** perlu diisi — `docker-compose.prod.yml` menurunkan/memaksanya. `FCM_SERVICE_ACCOUNT_JSON` opsional: kosong = push nonaktif, inbox tetap jalan.
 
 Perintah setara tanpa Make:

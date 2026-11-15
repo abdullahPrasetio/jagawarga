@@ -11,6 +11,7 @@ Aplikasi komunitas warga: panic button realtime, pengumuman, iuran + kas transpa
 | [api.md](api.md) | konvensi API, daftar endpoint, SSE, contoh `curl` | backend & klien |
 | [permissions.md](permissions.md) | matriks role → capability + titik penegakan | backend & review |
 | [mobile.md](mobile.md) | struktur app Flutter, auth, SSE, push, panic | mobile |
+| [push-notifications.md](push-notifications.md) | setup Firebase, kontrak payload, uji & troubleshooting push | backend/mobile/ops |
 | [web-admin.md](web-admin.md) | struktur web React, cookie auth, responsif | frontend web |
 | [operations.md](operations.md) | env, compose, deploy, backup, runbook | ops |
 | [security.md](security.md) | model ancaman, token, isolasi tenant, batasan | security review |

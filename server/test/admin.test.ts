@@ -110,6 +110,35 @@ describe('platform admin', () => {
     });
   });
 
+  test('uji push melaporkan adapter dan topic', async () => {
+    const demoId = await communityId();
+
+    const result = await request('/admin/push-test', {
+      method: 'POST',
+      token: platformToken,
+      body: { communityId: demoId, audience: 'community' },
+    });
+
+    expect(result.status).toBe(200);
+    expect(result.body.adapter).toBe('log');
+    expect(result.body.ok).toBe(true);
+    expect(result.body.topic).toBe(`community_${demoId}`);
+
+    const responders = await request('/admin/push-test', {
+      method: 'POST',
+      token: platformToken,
+      body: { communityId: demoId, audience: 'responders' },
+    });
+    expect(responders.body.topic).toBe(`community_${demoId}_responders`);
+
+    const forbidden = await request('/admin/push-test', {
+      method: 'POST',
+      token: budiToken,
+      body: { communityId: demoId },
+    });
+    expect(forbidden.status).toBe(403);
+  });
+
   test('stats melaporkan komunitas dan pengguna', async () => {
     const stats = await request('/admin/stats', { token: platformToken });
     expect(stats.status).toBe(200);

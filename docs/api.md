@@ -66,6 +66,7 @@ Semua route di bawah ini hanya untuk klaim `platformAdmin`.
 | PATCH | `/admin/communities/:id` | `{ name?, isActive? }`; suspend/aktifkan menulis `audit_logs` |
 | POST | `/admin/communities/:id/join` | Membership `admin` untuk diri sendiri (idempoten, diaudit) |
 | GET | `/admin/stats` | `{ communities, users, mediaCount, mediaBytes, alerts24h }` |
+| POST | `/admin/push-test` | `{ communityId, audience?: community\|responders }` → `{ adapter, topic, ok, error }` (uji kredensial FCM) |
 
 ## Komunitas, rumah, anggota
 

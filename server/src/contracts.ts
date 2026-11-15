@@ -145,6 +145,11 @@ export const communityCreateSchema = z.object({
   address: z.string().trim().max(160).optional(),
 });
 
+export const pushTestSchema = z.object({
+  communityId: z.string().uuid(),
+  audience: z.enum(['community', 'responders']).default('community'),
+});
+
 export const communityPatchSchema = z.object({
   name: z.string().trim().min(2).max(80).optional(),
   isActive: z.boolean().optional(),

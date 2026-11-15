@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import {
   communityCreateSchema,
   communityPatchSchema,
+  pushTestSchema,
   type CommunityAdminDto,
   type StatsDto,
 } from '../../contracts';
@@ -10,6 +11,8 @@ import { db, sql as pg } from '../../db/client';
 import { auditLogs, communities, memberships } from '../../db/schema';
 import { parseJson } from '../../lib/http';
 import { createInvite } from '../../lib/invites';
+import { push } from '../../lib/notify';
+import { communityTopic, responderTopic } from '../../lib/push';
 import { ApiError } from '../../lib/problem';
 
 export const adminRoutes = new Hono();
@@ -174,6 +177,44 @@ adminRoutes.post('/admin/communities/:id/join', async (c) => {
   }
 
   return c.json({ ok: true, communityId });
+});
+
+/**
+ * Kirim notifikasi uji ke topic komunitas/petugas. Dipakai saat menyiapkan
+ * Firebase untuk memastikan kredensial server benar sebelum panic sungguhan.
+ */
+adminRoutes.post('/admin/push-test', async (c) => {
+  const body = await parseJson(c, pushTestSchema);
+  const communityId = body.communityId;
+
+  const [community] = await db
+    .select({ id: communities.id, name: communities.name })
+    .from(communities)
+    .where(eq(communities.id, communityId))
+    .limit(1);
+
+  if (!community) throw new ApiError(404, 'not_found', 'Komunitas tidak ditemukan');
+
+  const topic =
+    body.audience === 'responders' ? responderTopic(communityId) : communityTopic(communityId);
+
+  const result = await push.sendToTopic(topic, {
+    title: `Uji notifikasi — ${community.name}`,
+    body: 'Jika Anda melihat ini, push Jaga Warga berfungsi.',
+    data: { type: 'test', communityId },
+    tag: `push-test-${communityId}`,
+  });
+
+  return c.json({
+    adapter: push.kind,
+    topic,
+    ok: result.ok,
+    error: result.error ?? null,
+    note:
+      push.kind === 'log'
+        ? 'Kredensial FCM kosong: push hanya di-log. Isi FCM_SERVICE_ACCOUNT_JSON lalu restart API.'
+        : 'Perangkat harus sudah subscribe topic (login di aplikasi).',
+  });
 });
 
 adminRoutes.get('/admin/stats', async (c) => {
