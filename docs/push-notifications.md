@@ -8,21 +8,23 @@ Push dipakai agar panic membangunkan HP warga walau aplikasi tertutup. Inbox `no
 |---|---|---|
 | Server | `FCM_SERVICE_ACCOUNT_JSON` | `.env` / secret manager |
 | Android | `google-services.json` | `app/android/app/google-services.json` (di-ignore) |
-| iOS (nanti) | `GoogleService-Info.plist` + APNs key | Xcode → Runner target |
+| iOS (nanti) | `GoogleService-Info.plist` + APNs key | `app/ios/Runner/GoogleService-Info.plist` (di-ignore), bundle ID `id.jagawarga.app` |
 
 Tidak perlu mengubah kode: Gradle sudah mengaktifkan plugin `com.google.gms.google-services` **hanya jika** `google-services.json` ada. Tanpa file itu aplikasi tetap jalan, push dinonaktifkan saat runtime (`push nonaktif: …`).
 
 ## Langkah setup
 
 1. Buat project di [Firebase Console](https://console.firebase.google.com) (Google Analytics boleh dimatikan).
-2. **Add app → Android**, package name **`id.jagawarga.app`** (harus sama dengan `applicationId`). Unduh `google-services.json` → taruh di `app/android/app/google-services.json`.
+2. **Add app → Android**, package name **`id.jagawarga.app`** (harus sama dengan `applicationId` di `app/android/app/build.gradle.kts`). Unduh `google-services.json` → taruh di `app/android/app/google-services.json`.
+   Android dan iOS memakai identitas yang sama (`id.jagawarga.app`); saat Xcode tersedia, tambahkan **Add app → iOS** dengan bundle ID itu lalu taruh `GoogleService-Info.plist` di `app/ios/Runner/`.
 3. **Project settings → Service accounts → Generate new private key** → unduh JSON.
 4. Isi `.env` server:
    ```bash
    # JSON satu baris (jq -c) atau base64 dari file
    FCM_SERVICE_ACCOUNT_JSON=$(jq -c . service-account.json)
-   # alternatif:
+   # alternatif (base64; Linux: -w0, macOS: tanpa -w):
    # FCM_SERVICE_ACCOUNT_JSON=$(base64 -w0 service-account.json)
+   # FCM_SERVICE_ACCOUNT_JSON=$(base64 -i service-account.json)
    ```
 5. Restart API. `GET /admin/stats` tetap jalan; log tidak lagi menulis peringatan push.
 6. Build & pasang APK: `make demo-app` (atau `flutter build apk --debug`).
