@@ -8,15 +8,15 @@ Push dipakai agar panic membangunkan HP warga walau aplikasi tertutup. Inbox `no
 |---|---|---|
 | Server | `FCM_SERVICE_ACCOUNT_JSON` | `.env` / secret manager |
 | Android | `google-services.json` | `app/android/app/google-services.json` (di-ignore) |
-| iOS (nanti) | `GoogleService-Info.plist` + APNs key | `app/ios/Runner/GoogleService-Info.plist` (di-ignore), bundle ID `id.jagawarga.app` |
+| iOS (nanti) | `GoogleService-Info.plist` + APNs key | `app/ios/Runner/GoogleService-Info.plist` (di-ignore), bundle ID `id.my.temancode.jagawarga` |
 
 Tidak perlu mengubah kode: Gradle sudah mengaktifkan plugin `com.google.gms.google-services` **hanya jika** `google-services.json` ada. Tanpa file itu aplikasi tetap jalan, push dinonaktifkan saat runtime (`push nonaktif: …`).
 
 ## Langkah setup
 
 1. Buat project di [Firebase Console](https://console.firebase.google.com) (Google Analytics boleh dimatikan).
-2. **Add app → Android**, package name **`id.jagawarga.app`** (harus sama dengan `applicationId` di `app/android/app/build.gradle.kts`). Unduh `google-services.json` → taruh di `app/android/app/google-services.json`.
-   Android dan iOS memakai identitas yang sama (`id.jagawarga.app`); saat Xcode tersedia, tambahkan **Add app → iOS** dengan bundle ID itu lalu taruh `GoogleService-Info.plist` di `app/ios/Runner/`.
+2. **Add app → Android**, package name **`id.my.temancode.jagawarga`** (harus sama dengan `applicationId` di `app/android/app/build.gradle.kts`). Unduh `google-services.json` → taruh di `app/android/app/google-services.json`.
+   Android dan iOS memakai identitas yang sama (`id.my.temancode.jagawarga`); saat Xcode tersedia, tambahkan **Add app → iOS** dengan bundle ID itu lalu taruh `GoogleService-Info.plist` di `app/ios/Runner/`.
 3. **Project settings → Service accounts → Generate new private key** → unduh JSON.
 4. Isi `.env` server:
    ```bash

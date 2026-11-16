@@ -8,9 +8,9 @@ import 'package:home_widget/home_widget.dart';
 /// tap tombol membuka layar konfirmasi di aplikasi.
 class WidgetService {
   static const _providers = [
-    'id.jagawarga.app.widget.PanicWidgetProvider',
-    'id.jagawarga.app.widget.BantuanWidgetProvider',
-    'id.jagawarga.app.widget.InfoWidgetProvider',
+    'id.my.temancode.jagawarga.widget.PanicWidgetProvider',
+    'id.my.temancode.jagawarga.widget.BantuanWidgetProvider',
+    'id.my.temancode.jagawarga.widget.InfoWidgetProvider',
   ];
 
   static Future<void> sync({

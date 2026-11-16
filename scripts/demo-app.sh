@@ -46,7 +46,7 @@ echo "Memasang aplikasi…"
 "$ADB" install -r "$APK" >/dev/null
 
 echo "Membuka Jaga Warga…"
-"$ADB" shell am start -n id.jagawarga.app/.MainActivity >/dev/null
+"$ADB" shell am start -n id.my.temancode.jagawarga/.MainActivity >/dev/null
 
 cat <<'EOF'
 

@@ -1,4 +1,4 @@
-package id.jagawarga.app.widget
+package id.my.temancode.jagawarga.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -10,8 +10,8 @@ import android.util.Log
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
-import id.jagawarga.app.MainActivity
-import id.jagawarga.app.R
+import id.my.temancode.jagawarga.MainActivity
+import id.my.temancode.jagawarga.R
 import java.text.NumberFormat
 import java.util.Locale
 

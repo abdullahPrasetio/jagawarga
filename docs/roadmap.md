@@ -47,7 +47,7 @@ Adapter `lib/whatsapp.ts` (Fonnte/WABLAS) dipanggil dari `publishPanic` untuk no
 
 ### 3. Push produksi
 
-- Buat project Firebase, tambahkan app Android `id.jagawarga.app`, unduh `google-services.json` ke `app/android/app/`.
+- Buat project Firebase, tambahkan app Android `id.my.temancode.jagawarga`, unduh `google-services.json` ke `app/android/app/`.
 - Isi `FCM_SERVICE_ACCOUNT_JSON` di server.
 - Uji: app di background → panic → notifikasi channel `panic` muncul <3 detik.
 - Lanjut iOS: Xcode + APNs key + `flutter build ios`.

@@ -170,7 +170,7 @@ Budi Santoso mengirim sinyal darurat · 2 menit lalu
 
 ### Fase B — Notifikasi (1–2 hari)
 
-1. Buat project Firebase, daftar app Android `id.jagawarga.app`, simpan `google-services.json` (di-`.gitignore`).
+1. Buat project Firebase, daftar app Android `id.my.temancode.jagawarga`, simpan `google-services.json` (di-`.gitignore`).
 2. Server: isi `FCM_SERVICE_ACCOUNT_JSON`; tambahkan `tag`, topic responders, log hasil kirim.
 3. App: channel `default` + `panic` (dibuat saat init), aksi "Saya merespons" → deep link, panduan izin.
 4. Terima: HP A di background → panic dari HP B → notifikasi muncul <5 detik, tap membuka alert, ack dari notifikasi berfungsi.

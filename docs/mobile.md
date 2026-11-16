@@ -86,7 +86,7 @@ Event yang dipakai: `panic.created`, `panic.updated`, `announcement.published`.
 
 ## Widget layar utama (Android)
 
-- Tiga provider native: `PanicWidgetProvider` (2×2), `BantuanWidgetProvider` (4×2), `InfoWidgetProvider` (4×1) di `android/app/src/main/kotlin/id/jagawarga/app/widget/`.
+- Tiga provider native: `PanicWidgetProvider` (2×2), `BantuanWidgetProvider` (4×2), `InfoWidgetProvider` (4×1) di `android/app/src/main/kotlin/id/my/temancode/jagawarga/widget/`.
 - Data: Flutter menulis snapshot kecil ke `SharedPreferences` (`HomeWidgetPreferences`) lewat `WidgetService.sync()`, lalu memicu update ketiga provider. Snapshot berisi status (`safe`/`alert`/`unauthenticated`), rumah, pengumuman terakhir, jumlah/total tagihan, dan jam pembaruan.
 - Tap tombol **selalu membuka aplikasi**: `jagawarga:///panic/confirm?type=panic|security|fire|medical` → layar konfirmasi 1,5 detik. Widget tidak pernah mengirim alert sendiri.
 - Seluruh kartu juga bisa diketuk (bukan hanya tombol kecil), dengan ripple sebagai umpan balik. Setiap aksi memakai `requestCode` PendingIntent unik agar tidak bertabrakan di launcher tertentu.

@@ -1,4 +1,4 @@
-package id.jagawarga.app
+package id.my.temancode.jagawarga
 
 import android.content.Intent
 import io.flutter.embedding.android.FlutterActivity
