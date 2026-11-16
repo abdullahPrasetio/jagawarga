@@ -89,6 +89,8 @@ Event yang dipakai: `panic.created`, `panic.updated`, `announcement.published`.
 - Tiga provider native: `PanicWidgetProvider` (2×2), `BantuanWidgetProvider` (4×2), `InfoWidgetProvider` (4×1) di `android/app/src/main/kotlin/id/jagawarga/app/widget/`.
 - Data: Flutter menulis snapshot kecil ke `SharedPreferences` (`HomeWidgetPreferences`) lewat `WidgetService.sync()`, lalu memicu update ketiga provider. Snapshot berisi status (`safe`/`alert`/`unauthenticated`), rumah, pengumuman terakhir, jumlah/total tagihan, dan jam pembaruan.
 - Tap tombol **selalu membuka aplikasi**: `jagawarga:///panic/confirm?type=panic|security|fire|medical` → layar konfirmasi 1,5 detik. Widget tidak pernah mengirim alert sendiri.
+- Seluruh kartu juga bisa diketuk (bukan hanya tombol kecil), dengan ripple sebagai umpan balik. Setiap aksi memakai `requestCode` PendingIntent unik agar tidak bertabrakan di launcher tertentu.
+- Receiver widget memakai `android:exported="true"` — tanpa itu launcher tidak bisa mengirim `APPWIDGET_UPDATE`, sehingga `onUpdate` tidak pernah jalan dan widget tampil tanpa handler tap. Setelah memperbarui APK, hapus dan pasang ulang widget agar layout baru dipakai.
 - Sinkronisasi terjadi saat beranda memuat data (login, SSE panic/pengumuman, pull-to-refresh) dan saat logout (status `unauthenticated`).
 - Batasan: belum ada refresh periodik 30 menit (butuh WorkManager), dan widget harus dipasang manual dari launcher (tidak bisa dipasang oleh aplikasi).
 

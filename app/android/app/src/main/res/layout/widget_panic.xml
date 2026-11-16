@@ -21,10 +21,10 @@
     <TextView
         android:id="@+id/widget_panic_button"
         android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
-        android:background="@drawable/widget_panic_button"
+        android:background="@drawable/widget_panic_button_ripple"
         android:gravity="center"
         android:text="PANIC"
         android:textColor="@color/warga_surface"

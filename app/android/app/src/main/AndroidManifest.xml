@@ -38,7 +38,7 @@
 
         <receiver
             android:name=".widget.PanicWidgetProvider"
-            android:exported="false"
+            android:exported="true"
             android:label="Jaga Warga — Panic">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -50,7 +50,7 @@
 
         <receiver
             android:name=".widget.BantuanWidgetProvider"
-            android:exported="false"
+            android:exported="true"
             android:label="Jaga Warga — Bantuan">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -62,7 +62,7 @@
 
         <receiver
             android:name=".widget.InfoWidgetProvider"
-            android:exported="false"
+            android:exported="true"
             android:label="Jaga Warga — Info">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -3,8 +3,10 @@ package id.jagawarga.app.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
@@ -17,8 +19,22 @@ import java.util.Locale
  * Widget hanya menampilkan snapshot yang ditulis Flutter (`WidgetService`).
  * Tap selalu membuka aplikasi — tidak pernah mengirim panic dari RemoteViews.
  */
-private fun launch(context: Context, uri: String): PendingIntent =
-    HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java, Uri.parse(uri))
+/**
+ * Setiap aksi memakai requestCode unik: beberapa launcher menganggap
+ * PendingIntent dengan requestCode sama sebagai satu intent yang sama.
+ */
+private fun launch(context: Context, uri: String, code: Int): PendingIntent {
+    val intent = Intent(context, MainActivity::class.java).apply {
+        action = HomeWidgetLaunchIntent.HOME_WIDGET_LAUNCH_ACTION
+        data = Uri.parse(uri)
+    }
+    return PendingIntent.getActivity(
+        context,
+        code,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+}
 
 private fun formatRupiah(raw: String?): String {
     val value = raw?.toLongOrNull() ?: 0L
@@ -39,6 +55,8 @@ class PanicWidgetProvider : HomeWidgetProvider() {
         val house = widgetData.getString("widget_house", "") ?: ""
         val alertHouse = widgetData.getString("widget_alert_house", "") ?: ""
         val updated = widgetData.getString("widget_updated", "") ?: ""
+
+        Log.d("JagaWidget", "panic update status=$status widgets=${appWidgetIds.size}")
 
         appWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_panic)
@@ -66,10 +84,10 @@ class PanicWidgetProvider : HomeWidgetProvider() {
                 R.id.widget_panic_updated,
                 if (updated.isEmpty()) "" else "diperbarui $updated",
             )
-            views.setOnClickPendingIntent(
-                R.id.widget_panic_button,
-                launch(context, "jagawarga:///panic/confirm?type=panic"),
-            )
+            val openConfirm = launch(context, "jagawarga:///panic/confirm?type=panic", 1)
+            views.setOnClickPendingIntent(R.id.widget_panic_button, openConfirm)
+            // Seluruh kartu juga bisa diketuk (area kecil sulit di HP).
+            views.setOnClickPendingIntent(R.id.widget_panic_root, openConfirm)
             appWidgetManager.updateAppWidget(widgetId, views)
         }
     }
@@ -93,6 +111,8 @@ class BantuanWidgetProvider : HomeWidgetProvider() {
             else -> "Tidak ada tagihan"
         }
 
+        Log.d("JagaWidget", "bantuan update status=$status widgets=${appWidgetIds.size}")
+
         appWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_bantuan)
             views.setInt(
@@ -109,12 +129,16 @@ class BantuanWidgetProvider : HomeWidgetProvider() {
                 R.id.widget_bantuan_kebakaran to "fire",
                 R.id.widget_bantuan_medis to "medical",
             )
-            buttons.forEach { (viewId, type) ->
+            buttons.entries.forEachIndexed { index, (viewId, type) ->
                 views.setOnClickPendingIntent(
                     viewId,
-                    launch(context, "jagawarga:///panic/confirm?type=$type"),
+                    launch(context, "jagawarga:///panic/confirm?type=$type", 10 + index),
                 )
             }
+            views.setOnClickPendingIntent(
+                R.id.widget_bantuan_root,
+                launch(context, "jagawarga:///open", 20),
+            )
 
             appWidgetManager.updateAppWidget(widgetId, views)
         }
@@ -144,13 +168,15 @@ class InfoWidgetProvider : HomeWidgetProvider() {
             else -> "Kas & pengumuman warga"
         }
 
+        Log.d("JagaWidget", "info update status=$status widgets=${appWidgetIds.size}")
+
         appWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_info)
             views.setTextViewText(R.id.widget_info_title, title)
             views.setTextViewText(R.id.widget_info_subtitle, subtitle)
             views.setOnClickPendingIntent(
                 R.id.widget_info_root,
-                launch(context, "jagawarga:///open"),
+                launch(context, "jagawarga:///open", 30),
             )
             appWidgetManager.updateAppWidget(widgetId, views)
         }

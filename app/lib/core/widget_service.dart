@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:home_widget/home_widget.dart';
 
 /// Snapshot kecil yang dibaca AppWidget native (RemoteViews tidak bisa
@@ -54,8 +55,10 @@ class WidgetService {
     for (final provider in _providers) {
       try {
         await HomeWidget.updateWidget(qualifiedAndroidName: provider);
-      } catch (_) {
+        debugPrint('[widget] $provider diperbarui');
+      } catch (error) {
         // widget mungkin belum dipasang / bukan Android
+        debugPrint('[widget] $provider gagal: $error');
       }
     }
   }
